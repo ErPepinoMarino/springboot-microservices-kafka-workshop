@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: workshop-postgres
+    environment:
+      POSTGRES_USER: workshop
+      POSTGRES_PASSWORD: workshop
+      POSTGRES_DB: workshop
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: workshop-redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:

@@ -1,0 +1,31 @@
+# Documentación y guías de trabajo local
+AGENTS.md
+PLAN.md
+PROGRESS.md
+
+# Secretos y variables de entorno
+.env
+*.env
+*.pem
+*.key
+
+# Archivos generados por IDEs y editores
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+*~
+
+# Archivos generados por Maven y Gradle
+/target/
+*/target/
+build/
+.gradle/
+
+# Archivos generados por Docker
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
