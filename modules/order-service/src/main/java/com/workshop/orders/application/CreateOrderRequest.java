@@ -1,26 +1,26 @@
 package com.workshop.orders.application;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import java.util.List;
 
 public class CreateOrderRequest {
 
-    @NotBlank(message = "El email del cliente es obligatorio")
-    @Email(message = "El email del cliente debe tener formato válido")
-    private String customerEmail;
+    @NotEmpty(message = "El pedido debe tener al menos una línea")
+    private List<@Valid CreateOrderItemRequest> lines;
 
     public CreateOrderRequest() {
     }
 
-    public CreateOrderRequest(String customerEmail) {
-        this.customerEmail = customerEmail;
+    public CreateOrderRequest(List<CreateOrderItemRequest> lines) {
+        this.lines = lines;
     }
 
-    public String getCustomerEmail() {
-        return customerEmail;
+    public List<CreateOrderItemRequest> getLines() {
+        return lines;
     }
 
-    public void setCustomerEmail(String customerEmail) {
-        this.customerEmail = customerEmail;
+    public void setLines(List<CreateOrderItemRequest> lines) {
+        this.lines = lines;
     }
 }

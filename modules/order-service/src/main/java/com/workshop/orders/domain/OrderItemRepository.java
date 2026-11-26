@@ -1,0 +1,8 @@
+package com.workshop.orders.domain;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface OrderItemRepository extends JpaRepository<OrderItem, OrderItemId> {
+
+    void deleteByIdOrderId(Long orderId);
+}
