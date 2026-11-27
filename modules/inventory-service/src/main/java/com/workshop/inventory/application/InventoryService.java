@@ -76,6 +76,7 @@ public class InventoryService {
                         "Stock insuficiente para " + line.productId() + " en el pedido: " + orderId);
             }
             stock.setAvailableQuantity(stock.getAvailableQuantity() - line.quantity());
+            stockRepository.save(stock);
             stockMovementRepository.save(new StockMovement(line.productId(), orderId, "salida",
                     line.quantity(), Instant.now()));
         }
