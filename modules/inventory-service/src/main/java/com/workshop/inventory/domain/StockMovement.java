@@ -31,20 +31,16 @@ public class StockMovement {
     @Column(name = "occurred_at", nullable = false)
     private Instant occurredAt;
 
-    @Column(name = "source_event_id", nullable = false, unique = true)
-    private String sourceEventId;
-
     public StockMovement() {
     }
 
     public StockMovement(String productId, Long orderId, String movementType, int quantity,
-                         Instant occurredAt, String sourceEventId) {
+                         Instant occurredAt) {
         this.productId = productId;
         this.orderId = orderId;
         this.movementType = movementType;
         this.quantity = quantity;
         this.occurredAt = occurredAt;
-        this.sourceEventId = sourceEventId;
     }
 
     public Long getId() {
@@ -69,9 +65,5 @@ public class StockMovement {
 
     public Instant getOccurredAt() {
         return occurredAt;
-    }
-
-    public String getSourceEventId() {
-        return sourceEventId;
     }
 }
