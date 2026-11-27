@@ -3,9 +3,13 @@ package com.workshop.inventory;
 import com.workshop.inventory.application.InventoryService;
 import com.workshop.inventory.application.ReserveOrderRequest;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -19,6 +23,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @SpringBootTest
 @Testcontainers
@@ -115,6 +120,30 @@ class InventoryServiceApplicationTests {
         assertThat(stock("P1")).isEqualTo(10);
         assertThat(count("SELECT count(*) FROM registro_ordenes WHERE order_id = ?", 4L)).isZero();
         assertThat(count("SELECT count(*) FROM processed_order WHERE order_id = ?", 4L)).isZero();
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("invalidRequests")
+    void shouldRejectInvalidRequest(String caseName, ReserveOrderRequest request) {
+        assertThatThrownBy(() -> inventoryService.reserveOrder(request))
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(error -> assertThat(((ResponseStatusException) error).getStatusCode())
+                        .isEqualTo(HttpStatus.BAD_REQUEST));
+
+        assertThat(stock("P1")).isEqualTo(10);
+        assertThat(count("SELECT count(*) FROM registro_ordenes")).isZero();
+        assertThat(count("SELECT count(*) FROM processed_order")).isZero();
+    }
+
+    static Stream<Arguments> invalidRequests() {
+        return Stream.of(
+                arguments("orderId nulo", new ReserveOrderRequest(null, List.of(item("P1", 1)))),
+                arguments("pedido vacío", new ReserveOrderRequest(5L, List.of())),
+                arguments("SKU nulo", new ReserveOrderRequest(6L, List.of(item(null, 1)))),
+                arguments("SKU vacío", new ReserveOrderRequest(7L, List.of(item(" ", 1)))),
+                arguments("cantidad cero", new ReserveOrderRequest(8L, List.of(item("P1", 0)))),
+                arguments("cantidad negativa", new ReserveOrderRequest(9L, List.of(item("P1", -1))))
+        );
     }
 
     private static ReserveOrderRequest request(Long orderId,
